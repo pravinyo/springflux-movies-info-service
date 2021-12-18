@@ -12,7 +12,6 @@ class FluxAndMonoController {
 
     @GetMapping("/flux")
     fun flux() : Flux<Int> {
-
         return Flux.just(1,2,3).log()
     }
 

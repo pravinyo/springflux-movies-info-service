@@ -47,3 +47,11 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+sourceSets {
+	test {
+		kotlin {
+			java.srcDirs("src/test/kotlin/unit", "src/test/kotlin/intg")
+		}
+	}
+}
