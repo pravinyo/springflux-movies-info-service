@@ -9,6 +9,6 @@ data class MovieInfo (
     @Id
     val movieInfoId: String?,
     val name: String,
-    val year: Int,
+    var year: Int,
     val cast: List<String>,
     val release_date: LocalDate)

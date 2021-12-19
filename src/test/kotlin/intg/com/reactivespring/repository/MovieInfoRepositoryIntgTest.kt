@@ -72,4 +72,17 @@ class MovieInfoRepositoryIntgTest {
                 assertEquals("Batman Begins1", it.name)
             }.verifyComplete()
     }
+
+    @Test
+    fun updateMovieInfo() {
+        val moviesInfo = movieInfoRepository.findById("abc").block()
+        moviesInfo!!.year = 2021
+
+        val moviesInfoMono = movieInfoRepository.save(moviesInfo).log()
+
+        StepVerifier.create(moviesInfoMono)
+            .assertNext {
+                assertEquals(2021, it.year)
+            }.verifyComplete()
+    }
 }
