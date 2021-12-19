@@ -66,4 +66,19 @@ internal class FluxAndMonoControllerTest {
                 assertEquals("Hello Pravin", responseBody)
             }
     }
+
+    @Test
+    fun stream() {
+        val flux = webTestClient.get().uri("/stream")
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .returnResult(Long::class.java)
+            .responseBody
+
+        StepVerifier.create(flux)
+            .expectNext(0L, 1L, 2L, 3L)
+            .thenCancel()
+            .verify()
+    }
 }
