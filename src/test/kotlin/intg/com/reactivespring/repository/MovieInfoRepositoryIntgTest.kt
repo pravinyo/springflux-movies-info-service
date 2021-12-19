@@ -3,6 +3,7 @@ package com.reactivespring.repository
 import com.reactivespring.domain.MovieInfo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -55,6 +56,20 @@ class MovieInfoRepositoryIntgTest {
         StepVerifier.create(moviesInfoMono)
             .assertNext { movieInfo ->
                 assertEquals("Dark Knight Rises", movieInfo.name)
+            }.verifyComplete()
+    }
+
+    @Test
+    fun saveMovieInfo() {
+        val movieInfo = MovieInfo(null, "Batman Begins1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+
+        val moviesInfoMono = movieInfoRepository.save(movieInfo).log()
+
+        StepVerifier.create(moviesInfoMono)
+            .assertNext {
+                assertNotNull(it.movieInfoId)
+                assertEquals("Batman Begins1", it.name)
             }.verifyComplete()
     }
 }
