@@ -85,4 +85,14 @@ class MovieInfoRepositoryIntgTest {
                 assertEquals(2021, it.year)
             }.verifyComplete()
     }
+
+    @Test
+    fun deleteMovieInfo() {
+        movieInfoRepository.deleteById("abc").block()
+        val movieInfoFlux = movieInfoRepository.findAll().log()
+
+        StepVerifier.create(movieInfoFlux)
+            .expectNextCount(2)
+            .verifyComplete()
+    }
 }
