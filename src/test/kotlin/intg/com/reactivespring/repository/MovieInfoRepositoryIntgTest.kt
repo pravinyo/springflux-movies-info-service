@@ -2,6 +2,7 @@ package com.reactivespring.repository
 
 import com.reactivespring.domain.MovieInfo
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,5 +45,16 @@ class MovieInfoRepositoryIntgTest {
         StepVerifier.create(moviesInfoFlux)
             .expectNextCount(3)
             .verifyComplete()
+    }
+
+    @Test
+    fun findById() {
+
+        val moviesInfoMono = movieInfoRepository.findById("abc").log()
+
+        StepVerifier.create(moviesInfoMono)
+            .assertNext { movieInfo ->
+                assertEquals("Dark Knight Rises", movieInfo.name)
+            }.verifyComplete()
     }
 }
