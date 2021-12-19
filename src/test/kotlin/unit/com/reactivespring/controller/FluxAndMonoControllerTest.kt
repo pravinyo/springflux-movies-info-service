@@ -53,4 +53,17 @@ internal class FluxAndMonoControllerTest {
                 assert(responseBody!!.size == 3)
             }
     }
+
+    @Test
+    fun mono() {
+        webTestClient.get().uri("/mono")
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBody(String::class.java)
+            .consumeWith<WebTestClient.ListBodySpec<String>> { entityExchangeResult ->
+                val responseBody = entityExchangeResult.responseBody
+                assertEquals("Hello Pravin", responseBody)
+            }
+    }
 }
