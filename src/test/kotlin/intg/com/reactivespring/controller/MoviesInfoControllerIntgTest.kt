@@ -83,4 +83,22 @@ internal class MoviesInfoControllerIntgTest {
             .expectBodyList(MovieInfo::class.java)
             .hasSize(3)
     }
+
+    @Test
+    fun getMovieInfoById() {
+        val movieInfoId = "abc"
+
+        webTestClient.get()
+            .uri("$MOVIES_INFO_URL/$movieInfoId")
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBody()
+            .jsonPath("$.name").isEqualTo("Dark Knight Rises")
+            /*.consumeWith<WebTestClient.BodySpec<MovieInfo, *>> {
+                val savedMovieInfo = it.responseBody
+                assertNotNull(savedMovieInfo)
+                assertEquals(savedMovieInfo?.movieInfoId, movieInfoId)
+            }*/
+    }
 }

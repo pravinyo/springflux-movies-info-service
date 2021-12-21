@@ -22,4 +22,10 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
     fun getAllMovieInfos() : Flux<MovieInfo> {
         return moviesInfoService.getAllMovieInfos().log()
     }
+
+    @GetMapping("/movieinfos/{id}")
+    fun getMovieInfoById(@PathVariable id: String) : Mono<MovieInfo> {
+        return moviesInfoService.getMovieInfoById(id).log()
+    }
+
 }

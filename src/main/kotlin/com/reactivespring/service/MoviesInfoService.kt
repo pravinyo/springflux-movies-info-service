@@ -17,4 +17,7 @@ class MoviesInfoService(private val movieInfoRepository: MovieInfoRepository) {
         return movieInfoRepository.findAll()
     }
 
+    fun getMovieInfoById(id: String): Mono<MovieInfo> {
+        return movieInfoRepository.findById(id)
+    }
 }
