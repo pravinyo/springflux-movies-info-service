@@ -1,7 +1,9 @@
 package com.reactivespring.controller
 
+import com.nhaarman.mockitokotlin2.isA
 import com.reactivespring.domain.MovieInfo
 import com.reactivespring.service.MoviesInfoService
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 
 @WebFluxTest(controllers = [MoviesInfoController::class])
@@ -38,6 +41,29 @@ class MoviesInfoControllerUnitTest {
             .is2xxSuccessful
             .expectBodyList(MovieInfo::class.java)
             .hasSize(3)
+    }
+
+    @Test
+    fun addMovieInfo() {
+        val movieInfo = MovieInfo(null, "Batman Begins1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+
+        `when`(moviesInfoServiceMock.addMovieInfo(isA()))
+            .thenReturn(Mono.just(movieInfo.copy(movieInfoId = "mockId")))
+
+        webTestClient.post()
+            .uri(MoviesInfoControllerIntgTest.MOVIES_INFO_URL)
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .isCreated
+            .expectBody(MovieInfo::class.java)
+            .consumeWith<WebTestClient.BodySpec<MovieInfo, *>> {
+                val savedMovieInfo = it.responseBody
+                Assertions.assertNotNull(savedMovieInfo)
+                Assertions.assertNotNull(savedMovieInfo?.movieInfoId)
+                Assertions.assertEquals("mockId", savedMovieInfo?.movieInfoId)
+            }
     }
 
     private fun getDefaultList(): Flux<MovieInfo> {
