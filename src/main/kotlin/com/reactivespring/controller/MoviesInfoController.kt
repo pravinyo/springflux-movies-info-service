@@ -18,6 +18,12 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
        return moviesInfoService.addMovieInfo(movieInfo)
     }
 
+    @PutMapping("/movieinfos/{id}")
+    fun updateMovieInfo(@RequestBody updatedMovieInfo: MovieInfo, @PathVariable id: String)
+    : Mono<MovieInfo> {
+        return moviesInfoService.updateMovieInfo(updatedMovieInfo, id)
+    }
+
     @GetMapping("/movieinfos")
     fun getAllMovieInfos() : Flux<MovieInfo> {
         return moviesInfoService.getAllMovieInfos().log()

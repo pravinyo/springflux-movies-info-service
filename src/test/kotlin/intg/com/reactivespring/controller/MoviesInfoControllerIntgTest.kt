@@ -101,4 +101,25 @@ internal class MoviesInfoControllerIntgTest {
                 assertEquals(savedMovieInfo?.movieInfoId, movieInfoId)
             }*/
     }
+
+    @Test
+    fun updateMovieInfo() {
+        val movieInfo = MovieInfo(null, "Dark Knight Rises1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+        val movieInfoId = "abc"
+
+        webTestClient.put()
+            .uri("$MOVIES_INFO_URL/$movieInfoId")
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBody(MovieInfo::class.java)
+            .consumeWith<WebTestClient.BodySpec<MovieInfo, *>> {
+                val updatedMovieInfo = it.responseBody
+                assertNotNull(updatedMovieInfo)
+                assertNotNull(updatedMovieInfo?.movieInfoId)
+                assertEquals(updatedMovieInfo?.name, "Dark Knight Rises1")
+            }
+    }
 }
