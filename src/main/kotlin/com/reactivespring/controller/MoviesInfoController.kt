@@ -4,6 +4,7 @@ import com.reactivespring.domain.MovieInfo
 import com.reactivespring.service.MoviesInfoService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
@@ -15,5 +16,10 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
     fun addMovieInfo(@RequestBody movieInfo: MovieInfo) : Mono<MovieInfo> {
 
        return moviesInfoService.addMovieInfo(movieInfo)
+    }
+
+    @GetMapping("/movieinfos")
+    fun getAllMovieInfos() : Flux<MovieInfo> {
+        return moviesInfoService.getAllMovieInfos().log()
     }
 }

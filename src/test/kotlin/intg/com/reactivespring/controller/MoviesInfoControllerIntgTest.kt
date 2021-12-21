@@ -72,4 +72,15 @@ internal class MoviesInfoControllerIntgTest {
                 assertNotNull(savedMovieInfo?.movieInfoId)
             }
     }
+
+    @Test
+    fun getAllMovieInfos() {
+        webTestClient.get()
+            .uri(MOVIES_INFO_URL)
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBodyList(MovieInfo::class.java)
+            .hasSize(3)
+    }
 }
