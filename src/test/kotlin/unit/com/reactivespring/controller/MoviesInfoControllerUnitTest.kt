@@ -66,6 +66,30 @@ class MoviesInfoControllerUnitTest {
             }
     }
 
+    @Test
+    fun updateMovieInfo() {
+        val movieInfo = MovieInfo(null, "Dark Knight Rises1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+        val movieInfoId = "abc"
+
+        `when`(moviesInfoServiceMock.updateMovieInfo(isA(), isA()))
+            .thenReturn(Mono.just(movieInfo.copy(movieInfoId=movieInfoId)))
+
+        webTestClient.put()
+            .uri("$MOVIES_INFO_URL/$movieInfoId")
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .expectBody(MovieInfo::class.java)
+            .consumeWith<WebTestClient.BodySpec<MovieInfo, *>> {
+                val updatedMovieInfo = it.responseBody
+                Assertions.assertNotNull(updatedMovieInfo)
+                Assertions.assertNotNull(updatedMovieInfo?.movieInfoId)
+                Assertions.assertEquals(updatedMovieInfo?.name, "Dark Knight Rises1")
+            }
+    }
+
     private fun getDefaultList(): Flux<MovieInfo> {
         val moviesInfos = mutableListOf<MovieInfo>()
         moviesInfos.add(
