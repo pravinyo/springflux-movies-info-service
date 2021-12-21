@@ -122,4 +122,15 @@ internal class MoviesInfoControllerIntgTest {
                 assertEquals(updatedMovieInfo?.name, "Dark Knight Rises1")
             }
     }
+
+    @Test
+    fun deleteMovieInfo() {
+        val movieInfoId = "abc"
+
+        webTestClient.delete()
+            .uri("$MOVIES_INFO_URL/$movieInfoId")
+            .exchange()
+            .expectStatus()
+            .isNoContent
+    }
 }

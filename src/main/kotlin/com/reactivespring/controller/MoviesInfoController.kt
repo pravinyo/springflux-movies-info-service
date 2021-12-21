@@ -34,4 +34,9 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
         return moviesInfoService.getMovieInfoById(id).log()
     }
 
+    @DeleteMapping("/movieinfos/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteMovieById(@PathVariable id: String) : Mono<Void> {
+        return moviesInfoService.deleteMovieInfo(id)
+    }
 }
