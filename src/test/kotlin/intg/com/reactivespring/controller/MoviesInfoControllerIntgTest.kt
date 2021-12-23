@@ -124,6 +124,20 @@ internal class MoviesInfoControllerIntgTest {
     }
 
     @Test
+    fun updateMovieInfo_notFound() {
+        val movieInfo = MovieInfo(null, "Dark Knight Rises1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+        val movieInfoId = "abcd"
+
+        webTestClient.put()
+            .uri("$MOVIES_INFO_URL/$movieInfoId")
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .isNotFound
+    }
+
+    @Test
     fun deleteMovieInfo() {
         val movieInfoId = "abc"
 

@@ -3,6 +3,7 @@ package com.reactivespring.controller
 import com.reactivespring.domain.MovieInfo
 import com.reactivespring.service.MoviesInfoService
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -21,8 +22,11 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
 
     @PutMapping("/movieinfos/{id}")
     fun updateMovieInfo(@RequestBody updatedMovieInfo: MovieInfo, @PathVariable id: String)
-    : Mono<MovieInfo> {
+    : Mono<ResponseEntity<MovieInfo>> {
         return moviesInfoService.updateMovieInfo(updatedMovieInfo, id)
+            .map(ResponseEntity.ok()::body)
+            .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()))
+            .log()
     }
 
     @GetMapping("/movieinfos")
