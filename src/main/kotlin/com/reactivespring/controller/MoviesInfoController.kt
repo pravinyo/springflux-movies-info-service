@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("v1")
@@ -13,7 +14,7 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
 
     @PostMapping("/movieinfos")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addMovieInfo(@RequestBody movieInfo: MovieInfo) : Mono<MovieInfo> {
+    fun addMovieInfo(@RequestBody @Valid movieInfo: MovieInfo) : Mono<MovieInfo> {
 
        return moviesInfoService.addMovieInfo(movieInfo)
     }

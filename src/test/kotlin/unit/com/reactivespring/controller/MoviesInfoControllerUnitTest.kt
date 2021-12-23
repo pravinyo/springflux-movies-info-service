@@ -67,6 +67,28 @@ class MoviesInfoControllerUnitTest {
     }
 
     @Test
+    fun addMovieInfo_validation() {
+        val movieInfo = MovieInfo(null, "", -2010,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+
+        `when`(moviesInfoServiceMock.addMovieInfo(isA()))
+            .thenReturn(Mono.just(movieInfo.copy(movieInfoId = "mockId")))
+
+        webTestClient.post()
+            .uri(MOVIES_INFO_URL)
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .isBadRequest
+            .expectBody(String::class.java)
+            .consumeWith<WebTestClient.BodySpec<String, *>> {
+                val errorMessage = it.responseBody
+                print("Error Message is: $errorMessage")
+                Assertions.assertNotNull(errorMessage)
+            }
+    }
+
+    @Test
     fun updateMovieInfo() {
         val movieInfo = MovieInfo(null, "Dark Knight Rises1", 2005,
             listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
