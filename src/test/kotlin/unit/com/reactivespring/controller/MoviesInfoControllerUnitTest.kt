@@ -71,9 +71,6 @@ class MoviesInfoControllerUnitTest {
         val movieInfo = MovieInfo(null, "", -2010,
             listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
 
-        `when`(moviesInfoServiceMock.addMovieInfo(isA()))
-            .thenReturn(Mono.just(movieInfo.copy(movieInfoId = "mockId")))
-
         webTestClient.post()
             .uri(MOVIES_INFO_URL)
             .bodyValue(movieInfo)
@@ -83,8 +80,9 @@ class MoviesInfoControllerUnitTest {
             .expectBody(String::class.java)
             .consumeWith<WebTestClient.BodySpec<String, *>> {
                 val errorMessage = it.responseBody
-                print("Error Message is: $errorMessage")
-                Assertions.assertNotNull(errorMessage)
+                val expectedErrorMessage = "MovieInfo.name must be present,MovieInfo.year must be Positive value"
+
+                Assertions.assertEquals(expectedErrorMessage, errorMessage)
             }
     }
 
