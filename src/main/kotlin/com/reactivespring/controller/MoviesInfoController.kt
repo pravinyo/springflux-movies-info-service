@@ -30,7 +30,10 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
     }
 
     @GetMapping("/movieinfos")
-    fun getAllMovieInfos() : Flux<MovieInfo> {
+    fun getAllMovieInfos(@RequestParam(value = "year", required = false) year: Int?) : Flux<MovieInfo> {
+        if (year != null) {
+            return moviesInfoService.getAllMovieByYear(year).log()
+        }
         return moviesInfoService.getAllMovieInfos().log()
     }
 
