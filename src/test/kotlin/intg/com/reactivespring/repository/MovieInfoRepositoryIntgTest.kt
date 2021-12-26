@@ -95,4 +95,15 @@ class MovieInfoRepositoryIntgTest {
             .expectNextCount(2)
             .verifyComplete()
     }
+
+    @Test
+    fun findByYear() {
+
+        val moviesInfoMono = movieInfoRepository.findByYear(2005).log()
+
+        StepVerifier.create(moviesInfoMono)
+            .assertNext { movieInfo ->
+                assertEquals(2005, movieInfo.year)
+            }.verifyComplete()
+    }
 }
