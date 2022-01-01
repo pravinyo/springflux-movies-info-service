@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
+import reactor.test.StepVerifier
 import java.time.LocalDate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -163,5 +164,39 @@ internal class MoviesInfoControllerIntgTest {
             .exchange()
             .expectStatus()
             .isNoContent
+    }
+
+    @Test
+    fun getAllMovieInfos_stream() {
+        val movieInfo = MovieInfo(null, "Batman Begins1", 2005,
+            listOf("Christian Bale", "Michael cane"), LocalDate.parse("2005-06-15"))
+
+        webTestClient.post()
+            .uri(MOVIES_INFO_URL)
+            .bodyValue(movieInfo)
+            .exchange()
+            .expectStatus()
+            .isCreated
+            .expectBody(MovieInfo::class.java)
+            .consumeWith<WebTestClient.BodySpec<MovieInfo, *>> {
+                val savedMovieInfo = it.responseBody
+                assertNotNull(savedMovieInfo)
+                assertNotNull(savedMovieInfo?.movieInfoId)
+            }
+
+        val movieStreamFlux = webTestClient.get()
+            .uri("$MOVIES_INFO_URL/stream")
+            .exchange()
+            .expectStatus()
+            .is2xxSuccessful
+            .returnResult(MovieInfo::class.java)
+            .responseBody
+
+        StepVerifier.create(movieStreamFlux)
+            .assertNext { movieInfo1 ->
+                assertNotNull(movieInfo1.movieInfoId)
+            }
+            .thenCancel()
+            .verify()
     }
 }
