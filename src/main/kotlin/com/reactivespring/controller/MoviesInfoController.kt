@@ -15,14 +15,14 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
 
     @PostMapping("/movieinfos")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addMovieInfo(@RequestBody @Valid movieInfo: MovieInfo) : Mono<MovieInfo> {
+    fun addMovieInfo(@RequestBody @Valid movieInfo: MovieInfo): Mono<MovieInfo> {
+        return moviesInfoService.addMovieInfo(movieInfo)
 
-       return moviesInfoService.addMovieInfo(movieInfo)
     }
 
     @PutMapping("/movieinfos/{id}")
     fun updateMovieInfo(@RequestBody updatedMovieInfo: MovieInfo, @PathVariable id: String)
-    : Mono<ResponseEntity<MovieInfo>> {
+            : Mono<ResponseEntity<MovieInfo>> {
         return moviesInfoService.updateMovieInfo(updatedMovieInfo, id)
             .map(ResponseEntity.ok()::body)
             .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()))
@@ -30,7 +30,7 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
     }
 
     @GetMapping("/movieinfos")
-    fun getAllMovieInfos(@RequestParam(value = "year", required = false) year: Int?) : Flux<MovieInfo> {
+    fun getAllMovieInfos(@RequestParam(value = "year", required = false) year: Int?): Flux<MovieInfo> {
         if (year != null) {
             return moviesInfoService.getAllMovieByYear(year).log()
         }
@@ -38,7 +38,7 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
     }
 
     @GetMapping("/movieinfos/{id}")
-    fun getMovieInfoById(@PathVariable id: String) : Mono<ResponseEntity<MovieInfo>> {
+    fun getMovieInfoById(@PathVariable id: String): Mono<ResponseEntity<MovieInfo>> {
         return moviesInfoService.getMovieInfoById(id)
             .map { ResponseEntity.ok().body(it) }
             .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()))
@@ -47,7 +47,7 @@ class MoviesInfoController(private val moviesInfoService: MoviesInfoService) {
 
     @DeleteMapping("/movieinfos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteMovieById(@PathVariable id: String) : Mono<Void> {
+    fun deleteMovieById(@PathVariable id: String): Mono<Void> {
         return moviesInfoService.deleteMovieInfo(id)
     }
 }
